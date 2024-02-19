@@ -1,0 +1,31 @@
+{
+  "name": "@usagehq/usage-sdk",
+  "version": "0.0.0",
+  "description": "SDK for Usage.so",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/UsageHQ/sdk",
+  "bugs": {
+    "url": "https://github.com/UsageHQ/sdk/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "typescript": "^5.3.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
