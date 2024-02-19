@@ -1,7 +1,7 @@
 import LiveState from "phx-live-state";
 import { useMemo, useState, useEffect } from "react";
 
-export type Request<T extends any> = {
+export type Request<T> = {
   id: string;
   resp_body_chunks: string[];
   req_metadata: T;
@@ -9,7 +9,7 @@ export type Request<T extends any> = {
   resp_code: null | number;
 };
 
-export const useSession = <Metadata extends any>(sessionId?: string | null) => {
+export const useSession = <Metadata>(sessionId?: string | null) => {
   const [state, setState] = useState<
     | undefined
     | {
@@ -22,7 +22,8 @@ export const useSession = <Metadata extends any>(sessionId?: string | null) => {
   const liveState = useMemo(
     () =>
       sessionId
-        ? new LiveState({
+        ? // @ts-expect-error Will replace phx-live-state with something else
+          new LiveState({
             url: "ws://localhost:4000/socket",
             // url: process.env.NEXT_PUBLIC_USAGE_WS,
             topic: `session:${sessionId}`,
@@ -39,7 +40,7 @@ export const useSession = <Metadata extends any>(sessionId?: string | null) => {
     if (!liveState) return;
 
     liveState.connect();
-    let handler = () => {
+    const handler = () => {
       setState(liveState.state);
       setConnected(liveState.connected);
     };

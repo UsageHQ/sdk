@@ -1,3 +1,3 @@
-import { useSession } from "./useSession";
+import { type Request, useSession } from "./useSession.js";
 
-export { useSession };
+export { Request, useSession };

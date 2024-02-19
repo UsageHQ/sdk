@@ -1,5 +1,5 @@
 {
-  "name": "@usagehq/next",
+  "name": "@usagehq/sdk-next",
   "version": "0.0.0",
   "type": "module",
   "files": [
