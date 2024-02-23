@@ -1,39 +1,56 @@
 import LiveState from "phx-live-state";
 import { useMemo, useState, useEffect } from "react";
+import { USAGE_BASE } from "./util";
+import { components } from "@usagehq/api";
 
-export type Request<T> = {
-  id: string;
-  resp_body_chunks: string[];
-  req_metadata: T;
-  status: string;
-  resp_code: null | number;
-};
+const PREFIX = "USAGE_";
+const USAGE_SESSION_ID_KEY = PREFIX + "SID";
 
-export const useSession = <Metadata>(sessionId?: string | null) => {
-  const [state, setState] = useState<
-    | undefined
-    | {
-        session: { id: string; requests: Request<Metadata>[] };
-        active_requests: Record<string, Request<Metadata>>;
-      }
-  >();
+export function useSession<TMetadata>(
+  actions: SelfHostedActions,
+  /** If undefined, use session id from localStorage. Will create a new session
+   * and put into localStorage if no session previously exist. Use `null` to
+   * temporarily disable the hook. */
+  sessionId?: string | null,
+) {
+  const [state, setState] = useState<undefined | State<TMetadata>>();
   const [connected, setConnected] = useState(false);
+
+  const [activeSessionId, setActiveSessionId] = useState(
+    sessionId === undefined ? getSessionId() : sessionId,
+  );
+  useEffect(() => {
+    setActiveSessionId(sessionId === undefined ? getSessionId() : sessionId);
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (activeSessionId !== undefined) return;
+
+    let willUpdate = true;
+    (async () => {
+      const newSession = await actions.createSession();
+      localStorage.setItem(USAGE_SESSION_ID_KEY, newSession.id);
+      if (willUpdate) {
+        setActiveSessionId(newSession.id);
+      }
+    })();
+    return () => {
+      willUpdate = false;
+    };
+  }, [activeSessionId]);
 
   const liveState = useMemo(
     () =>
-      sessionId
-        ? // @ts-expect-error Will replace phx-live-state with something else
-          new LiveState({
-            url: "ws://localhost:4000/socket",
-            // url: process.env.NEXT_PUBLIC_USAGE_WS,
-            topic: `session:${sessionId}`,
+      activeSessionId
+        ? new LiveState({
+            url: `ws://${USAGE_BASE}/socket`,
+            topic: `session:${activeSessionId}`,
             params: {
-              // token: "1234",
               key: process.env.NEXT_PUBLIC_USAGE_PUBLIC_SHAREABLE,
             },
           })
         : null,
-    [sessionId],
+    [activeSessionId],
   );
 
   useEffect(() => {
@@ -51,5 +68,26 @@ export const useSession = <Metadata>(sessionId?: string | null) => {
     };
   }, [liveState]);
 
-  return { connected, state };
+  return { connected, state, sessionId: activeSessionId };
+}
+
+type State<TMetadata> = {
+  session: { id: string; requests: Request<TMetadata>[] };
+  active_requests: Record<string, Request<TMetadata>>;
 };
+
+export type Request<TMetadata> = {
+  id: string;
+  resp_body_chunks: string[];
+  req_metadata: TMetadata;
+  status: string;
+  resp_code: null | number;
+};
+
+type SelfHostedActions = {
+  createSession: () => Promise<components["schemas"]["Session"]>;
+};
+
+export function getSessionId() {
+  return localStorage.getItem(USAGE_SESSION_ID_KEY) ?? undefined;
+}

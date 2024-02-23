@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Bundler",
     "allowJs": false,
     "noEmit": true,
     "esModuleInterop": true,

@@ -1,3 +1,12 @@
-import { type Request, useSession } from "./useSession.js";
+import { type Request, useSession, getSessionId } from "./useSession";
+import { queue, createSession, setSessionName, getSessions } from "./actions";
 
-export { Request, useSession };
+export {
+  useSession,
+  createSession,
+  queue,
+  Request,
+  getSessionId,
+  setSessionName,
+  getSessions,
+};
