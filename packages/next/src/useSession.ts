@@ -1,6 +1,6 @@
 import LiveState from "phx-live-state";
 import { useMemo, useState, useEffect } from "react";
-import { USAGE_BASE } from "./util";
+import { USAGE_BASE, USAGE_PUBLIC } from "./util";
 import { components } from "@usagehq/api";
 
 const PREFIX = "USAGE_";
@@ -46,7 +46,7 @@ export function useSession<TMetadata>(
             url: `ws://${USAGE_BASE}/socket`,
             topic: `session:${activeSessionId}`,
             params: {
-              key: process.env.NEXT_PUBLIC_USAGE_PUBLIC_SHAREABLE,
+              key: USAGE_PUBLIC,
             },
           })
         : null,

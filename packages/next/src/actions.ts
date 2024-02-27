@@ -1,4 +1,4 @@
-import { USAGE_BASE } from "./util";
+import { USAGE_BASE, USAGE_SECRET } from "./util";
 import { createUsageClient } from "@usagehq/api";
 
 const USAGE_API_URL = `http://${USAGE_BASE}/api/core`;
@@ -8,7 +8,7 @@ const client = createUsageClient(USAGE_API_URL);
 export async function createSession(customerRef: string) {
   const { data, error } = await client.POST("/sessions", {
     headers: {
-      "x-usage-api-key": process.env.USAGE_SECRET ?? "",
+      "x-usage-api-key": USAGE_SECRET,
       "content-type": "application/vnd.api+json",
     },
     body: {
@@ -40,7 +40,7 @@ export async function queue(
 ) {
   const { data, error } = await client.POST("/requests", {
     headers: {
-      "x-usage-api-key": process.env.USAGE_SECRET ?? "",
+      "x-usage-api-key": USAGE_SECRET,
       "content-type": "application/vnd.api+json",
     },
     body: {
@@ -70,7 +70,7 @@ export const setSessionName = async (sessionId: string, name: string) => {
       path: { id: sessionId },
     },
     headers: {
-      "x-usage-api-key": process.env.USAGE_SECRET ?? "",
+      "x-usage-api-key": USAGE_SECRET,
       "content-type": "application/vnd.api+json",
     },
     body: {
@@ -96,7 +96,7 @@ export const getSessions = async (customerRef: string) => {
       },
     },
     headers: {
-      "x-usage-api-key": process.env.USAGE_SECRET ?? "",
+      "x-usage-api-key": USAGE_SECRET,
       "content-type": "application/vnd.api+json",
     },
   });
