@@ -1,5 +1,10 @@
 # Usage Next.js SDK
 
+For an example of how to use this SDK properly, see [Usage Next.js SDK
+example](https://github.com/UsageHQ/nextjs-example).
+
+## Installation
+
 To install, run:
 
 ```bash
