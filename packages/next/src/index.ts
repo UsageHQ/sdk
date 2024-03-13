@@ -1,5 +1,13 @@
 import { type Request, useSession, getSessionId } from "./useSession";
-import { queue, createSession, setSessionName, getSessions } from "./actions";
+import {
+  queue,
+  createSession,
+  setSessionName,
+  getSessions,
+  getCustomerFreeCredit,
+  addCustomerFreeCredit,
+  createCustomerAccounts,
+} from "./actions";
 
 export {
   useSession,
@@ -9,4 +17,7 @@ export {
   getSessionId,
   setSessionName,
   getSessions,
+  getCustomerFreeCredit,
+  addCustomerFreeCredit,
+  createCustomerAccounts,
 };

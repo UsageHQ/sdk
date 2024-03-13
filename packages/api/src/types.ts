@@ -18,6 +18,7 @@ export interface paths {
             id?: {
               [key: string]: unknown;
             };
+            ledger_accounts?: string;
             name?: {
               [key: string]: unknown;
             };
@@ -56,6 +57,212 @@ export interface paths {
             "application/vnd.api+json": {
               /** @description An array of resource objects representing a Customer */
               data?: components["schemas"]["Customer"][];
+              included?: never[];
+            };
+          };
+        };
+        default: components["responses"]["errors"];
+      };
+    };
+  };
+  "/ledger-accounts": {
+    /** @description Get ledger accounts */
+    get: {
+      parameters: {
+        query?: {
+          /** @description Filters the query to results with attributes matching the given filter object */
+          filter?: {
+            allow_zero_balance?: {
+              [key: string]: unknown;
+            };
+            balances?: string;
+            currency?: {
+              [key: string]: unknown;
+            };
+            customer?: string;
+            id?: {
+              [key: string]: unknown;
+            };
+            identifier?: {
+              [key: string]: unknown;
+            };
+            inserted_at?: {
+              [key: string]: unknown;
+            };
+            organization?: string;
+          };
+          /** @description Sort order to apply to the results */
+          sort?: ("inserted_at" | "-inserted_at" | "currency" | "-currency" | "identifier" | "-identifier" | "id" | "-id" | "allow_zero_balance" | "-allow_zero_balance")[];
+          /** @description Paginates the response with the limit and offset */
+          page?: {
+            limit?: number;
+            offset?: number;
+          };
+          /** @description Relationship paths to include in the response */
+          include?: string[];
+          /** @description Limits the response fields to only those listed for each type */
+          fields?: {
+            /**
+             * @description Comma separated field names for LedgerAccount
+             * @example inserted_at,currency,identifier,id,allow_zero_balance
+             */
+            LedgerAccount?: string;
+            [key: string]: unknown;
+          };
+          /** @description customer_ref */
+          customer_ref?: string;
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            "application/vnd.api+json": {
+              /** @description An array of resource objects representing a LedgerAccount */
+              data?: components["schemas"]["LedgerAccount"][];
+              included?: never[];
+            };
+          };
+        };
+        default: components["responses"]["errors"];
+      };
+    };
+    /** @description create_for_customer operation on LedgerAccount resource */
+    post: {
+      parameters: {
+        query?: {
+          /** @description Relationship paths to include in the response */
+          include?: string[];
+          /** @description Limits the response fields to only those listed for each type */
+          fields?: {
+            /**
+             * @description Comma separated field names for LedgerAccount
+             * @example inserted_at,currency,identifier,id,allow_zero_balance
+             */
+            LedgerAccount?: string;
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request body for create_for_customer operation on LedgerAccount resource */
+      requestBody: {
+        content: {
+          "application/vnd.api+json": {
+            data: {
+              attributes?: {
+                allow_zero_balance?: boolean;
+                currency: string;
+                customer_ref: string;
+                identifier: string;
+                inserted_at?: {
+                  [key: string]: unknown;
+                };
+              };
+              relationships?: Record<string, never>;
+              /** @enum {unknown} */
+              type?: "LedgerAccount";
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            "application/vnd.api+json": {
+              data?: components["schemas"]["LedgerAccount"];
+              included?: never[];
+            };
+          };
+        };
+        default: components["responses"]["errors"];
+      };
+    };
+  };
+  "/ledger-accounts/{id}": {
+    /** @description read operation on LedgerAccount resource */
+    get: {
+      parameters: {
+        query?: {
+          /** @description Relationship paths to include in the response */
+          include?: string[];
+          /** @description Limits the response fields to only those listed for each type */
+          fields?: {
+            /**
+             * @description Comma separated field names for LedgerAccount
+             * @example inserted_at,currency,identifier,id,allow_zero_balance
+             */
+            LedgerAccount?: string;
+            [key: string]: unknown;
+          };
+        };
+        path: {
+          id: string;
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            "application/vnd.api+json": {
+              data?: components["schemas"]["LedgerAccount"];
+              included?: never[];
+            };
+          };
+        };
+        default: components["responses"]["errors"];
+      };
+    };
+  };
+  "/ledger-accounts/{id}/balance": {
+    /** @description Update balance */
+    patch: {
+      parameters: {
+        query?: {
+          /** @description Relationship paths to include in the response */
+          include?: string[];
+          /** @description Limits the response fields to only those listed for each type */
+          fields?: {
+            /**
+             * @description Comma separated field names for LedgerAccount
+             * @example inserted_at,currency,identifier,id,allow_zero_balance
+             */
+            LedgerAccount?: string;
+            [key: string]: unknown;
+          };
+        };
+        path: {
+          id: string;
+        };
+      };
+      /** @description Request body for update_balance operation on LedgerAccount resource */
+      requestBody: {
+        content: {
+          "application/vnd.api+json": {
+            data: {
+              attributes?: {
+                action: {
+                  [key: string]: unknown;
+                };
+                /** Format: float */
+                amount: number;
+                /** Format: uuid */
+                id?: string;
+              };
+              id: string;
+              relationships?: Record<string, never>;
+              /** @enum {unknown} */
+              type?: "LedgerAccount";
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description Success */
+        200: {
+          content: {
+            "application/vnd.api+json": {
+              data?: components["schemas"]["LedgerAccount"];
               included?: never[];
             };
           };
@@ -486,8 +693,46 @@ export interface components {
       id: string;
       /** @description A relationships object for a Customer */
       relationships?: {
+        ledger_accounts?: {
+          /** @description An array of inputs for ledger_accounts */
+          data?: {
+              id: string;
+              meta?: {
+                [key: string]: unknown;
+              };
+              type: string;
+            }[];
+        };
         sessions?: {
           /** @description An array of inputs for sessions */
+          data?: {
+              id: string;
+              meta?: {
+                [key: string]: unknown;
+              };
+              type: string;
+            }[];
+        };
+      };
+      type: string;
+    };
+    /** @description A "Resource object" representing a LedgerAccount */
+    LedgerAccount: {
+      /** @description An attributes object for a LedgerAccount */
+      attributes?: {
+        allow_zero_balance?: boolean;
+        balance?: string;
+        currency: string;
+        identifier: string;
+        inserted_at: {
+          [key: string]: unknown;
+        };
+      };
+      id: string;
+      /** @description A relationships object for a LedgerAccount */
+      relationships?: {
+        customer?: {
+          /** @description An array of inputs for customer */
           data?: {
               id: string;
               meta?: {
