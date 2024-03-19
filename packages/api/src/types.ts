@@ -213,8 +213,6 @@ export interface paths {
         default: components["responses"]["errors"];
       };
     };
-  };
-  "/ledger-accounts/{id}/balance": {
     /** @description Update balance */
     patch: {
       parameters: {
@@ -241,9 +239,8 @@ export interface paths {
           "application/vnd.api+json": {
             data: {
               attributes?: {
-                action: {
-                  [key: string]: unknown;
-                };
+                /** @enum {string} */
+                action: "add" | "sub";
                 /** Format: float */
                 amount: number;
                 /** Format: uuid */
@@ -853,7 +850,9 @@ export interface components {
       /** @description A short, human-readable summary of the problem. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization. */
       title?: string;
     };
-    errors: components["schemas"]["error"][];
+    errors: {
+      errors?: components["schemas"]["error"][];
+    };
     /** @description A link MUST be represented as either: a string containing the link's URL or a link object. */
     link: string;
     links: {

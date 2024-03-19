@@ -36,7 +36,7 @@ type LLMRequest = {
 export async function queue(
   customerRef: string,
   sessionId: string,
-  req: LLMRequest,
+  req: LLMRequest
 ) {
   const { data, error } = await client.POST("/requests", {
     headers: {
@@ -139,7 +139,7 @@ export async function createCustomerAccounts(customerRef: string) {
   if (error) {
     console.error(error);
     throw new Error(
-      "An error occurred while creating customer's ledger accounts",
+      "An error occurred while creating customer's ledger accounts"
     );
   }
 }
@@ -148,8 +148,9 @@ async function getCustomerAccounts(customerRef: string) {
   let customerAccountsResponse = await fetchCustomerAccounts(customerRef);
   console.log(
     123,
+    customerRef,
     customerAccountsResponse.data,
-    customerAccountsResponse.error,
+    customerAccountsResponse.error
   );
 
   if (
@@ -180,14 +181,14 @@ export async function getCustomerFreeCredit(customerRef: string) {
 
 export async function addCustomerFreeCredit(
   customerRef: string,
-  amount: number,
+  amount: number
 ) {
   const account = await getCustomerFreeAccount(customerRef);
   if (!account) {
     throw new Error("Customer's ledger account not found");
   }
 
-  const { error } = await client.PATCH("/ledger-accounts/{id}/balance", {
+  const { error } = await client.PATCH("/ledger-accounts/{id}", {
     headers: {
       "x-usage-api-key": USAGE_SECRET,
       "content-type": "application/vnd.api+json",
@@ -207,7 +208,7 @@ export async function addCustomerFreeCredit(
   if (error) {
     console.error(error);
     throw new Error(
-      "An error occurred while adding credit to customer's account",
+      "An error occurred while adding credit to customer's account"
     );
   }
 }
