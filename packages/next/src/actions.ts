@@ -121,37 +121,34 @@ async function fetchCustomerAccounts(customerRef: string) {
 }
 
 export async function createCustomerAccounts(customerRef: string) {
-  const { error } = await client.POST("/ledger-accounts", {
-    headers: {
-      "x-usage-api-key": USAGE_SECRET,
-      "content-type": "application/vnd.api+json",
-    },
-    body: {
-      data: {
-        attributes: {
-          customer_ref: customerRef,
-          currency: "XFC",
-          identifier: `${customerRef}_XFC`,
+  ["XFC", "XPC"].forEach(async (currency) => {
+    const { error } = await client.POST("/ledger-accounts", {
+      headers: {
+        "x-usage-api-key": USAGE_SECRET,
+        "content-type": "application/vnd.api+json",
+      },
+      body: {
+        data: {
+          attributes: {
+            customer_ref: customerRef,
+            currency,
+            identifier: `${customerRef}_${currency}`,
+          },
         },
       },
-    },
+    });
+    if (error) {
+      console.error(error);
+      throw new Error(
+        "An error occurred while creating customer's ledger accounts"
+      );
+    }
   });
-  if (error) {
-    console.error(error);
-    throw new Error(
-      "An error occurred while creating customer's ledger accounts"
-    );
-  }
 }
 
 async function getCustomerAccounts(customerRef: string) {
   let customerAccountsResponse = await fetchCustomerAccounts(customerRef);
-  if (
-    customerAccountsResponse.data?.data?.length === 0 ||
-    // TODO: fix backend
-    // customerAccountsResponse.error?.some((e) => e.status === "404")
-    customerAccountsResponse.error
-  ) {
+  if (customerAccountsResponse.data?.data?.length === 0) {
     await createCustomerAccounts(customerRef);
     customerAccountsResponse = await fetchCustomerAccounts(customerRef);
   }
@@ -162,21 +159,17 @@ async function getCustomerAccounts(customerRef: string) {
   return customerAccountsResponse.data.data;
 }
 
-async function getCustomerFreeAccount(customerRef: string) {
+async function getCustomerAccount(customerRef: string, currency: string) {
   const accounts = await getCustomerAccounts(customerRef);
-  return accounts?.find((d) => d.attributes?.currency === "XFC");
+  return accounts?.find((d) => d.attributes?.currency === currency);
 }
 
-export async function getCustomerFreeCredit(customerRef: string) {
-  const account = await getCustomerFreeAccount(customerRef);
-  return account?.attributes?.balance ?? null;
-}
-
-export async function addCustomerFreeCredit(
+export async function addCustomerCredit(
   customerRef: string,
+  currency: string,
   amount: number
 ) {
-  const account = await getCustomerFreeAccount(customerRef);
+  const account = await getCustomerAccount(customerRef, currency);
   if (!account) {
     throw new Error("Customer's ledger account not found");
   }
@@ -204,4 +197,28 @@ export async function addCustomerFreeCredit(
       "An error occurred while adding credit to customer's account"
     );
   }
+}
+
+export async function getCustomerFreeCredit(customerRef: string) {
+  const account = await getCustomerAccount(customerRef, "XFC");
+  return account?.attributes?.balance ?? null;
+}
+
+export async function addCustomerFreeCredit(
+  customerRef: string,
+  amount: number
+) {
+  return await addCustomerCredit(customerRef, "XFC", amount);
+}
+
+export async function getCustomerPaidCredit(customerRef: string) {
+  const account = await getCustomerAccount(customerRef, "XPC");
+  return account?.attributes?.balance ?? null;
+}
+
+export async function addCustomerPaidCredit(
+  customerRef: string,
+  amount: number
+) {
+  return await addCustomerCredit(customerRef, "XPC", amount);
 }

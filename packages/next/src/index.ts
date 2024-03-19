@@ -7,6 +7,8 @@ import {
   getCustomerFreeCredit,
   addCustomerFreeCredit,
   createCustomerAccounts,
+  getCustomerPaidCredit,
+  addCustomerPaidCredit,
 } from "./actions";
 
 export {
@@ -20,4 +22,6 @@ export {
   getCustomerFreeCredit,
   addCustomerFreeCredit,
   createCustomerAccounts,
+  getCustomerPaidCredit,
+  addCustomerPaidCredit,
 };
