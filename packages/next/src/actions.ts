@@ -146,13 +146,6 @@ export async function createCustomerAccounts(customerRef: string) {
 
 async function getCustomerAccounts(customerRef: string) {
   let customerAccountsResponse = await fetchCustomerAccounts(customerRef);
-  console.log(
-    123,
-    customerRef,
-    customerAccountsResponse.data,
-    customerAccountsResponse.error
-  );
-
   if (
     customerAccountsResponse.data?.data?.length === 0 ||
     // TODO: fix backend
